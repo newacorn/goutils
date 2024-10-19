@@ -286,3 +286,64 @@ var htmlSafeSet = [utf8.RuneSelf]bool{
 	'~':      true,
 	'\u007f': true,
 }
+
+// MySqlEscape escapes []byte with backslashes (\)
+// This escapes the contents of a string (provided as []byte) by adding backslashes before special
+// characters, and turning others into specific escape sequences, such as
+// turning newlines into \n and null bytes into \0.
+// https://github.com/mysql/mysql-server/blob/mysql-5.7.5/mysys/charset.c#L823-L932
+func MySqlEscape(buf, v []byte) []byte {
+	pos := len(buf)
+	buf = reserveBuffer(buf, len(v)*2)
+
+	for _, c := range v {
+		switch c {
+		case '\x00':
+			buf[pos+1] = '0'
+			buf[pos] = '\\'
+			pos += 2
+		case '\n':
+			buf[pos+1] = 'n'
+			buf[pos] = '\\'
+			pos += 2
+		case '\r':
+			buf[pos+1] = 'r'
+			buf[pos] = '\\'
+			pos += 2
+		case '\x1a':
+			buf[pos+1] = 'Z'
+			buf[pos] = '\\'
+			pos += 2
+		case '\'':
+			buf[pos+1] = '\''
+			buf[pos] = '\\'
+			pos += 2
+		case '"':
+			buf[pos+1] = '"'
+			buf[pos] = '\\'
+			pos += 2
+		case '\\':
+			buf[pos+1] = '\\'
+			buf[pos] = '\\'
+			pos += 2
+		default:
+			buf[pos] = c
+			pos++
+		}
+	}
+
+	return buf[:pos]
+}
+
+// reserveBuffer checks cap(buf) and expand buffer to len(buf) + appendSize.
+// If cap(buf) is not enough, reallocate new buffer.
+func reserveBuffer(buf []byte, appendSize int) []byte {
+	newSize := len(buf) + appendSize
+	if cap(buf) < newSize {
+		// Grow buffer exponentially
+		newBuf := make([]byte, len(buf)*2+appendSize)
+		copy(newBuf, buf)
+		buf = newBuf
+	}
+	return buf[:newSize]
+}
