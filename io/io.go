@@ -93,6 +93,7 @@ func copyBuffer(dst io.Writer, src io.Reader, buf []byte) (written int64, err er
 			}
 		}
 		pb = bpool.Get(size)
+		pb.B = pb.B[:cap(pb.B)]
 		buf = pb.B
 	}
 	for {
@@ -194,6 +195,7 @@ var blackHolePool = sync.Pool{
 
 func (discard) ReadFrom(r io.Reader) (n int64, err error) {
 	pb := bpool.Get(8192)
+	pb.B = pb.B[:cap(pb.B)]
 	readSize := 0
 	for {
 		readSize, err = r.Read(pb.B)
@@ -214,6 +216,7 @@ type DiscardWithEOF interface {
 
 func (discard) ReadFromWithEOF(r io.Reader) (n int64, err error) {
 	pb := bpool.Get(8192)
+	pb.B = pb.B[:cap(pb.B)]
 	readSize := 0
 	for {
 		readSize, err = r.Read(pb.B)
@@ -236,6 +239,7 @@ func (discard) ReadFromWithEOF(r io.Reader) (n int64, err error) {
 // as an error to be reported.
 func ReadAll(r io.Reader) (pb *bpool.Bytes, err error) {
 	pb = bpool.Get(512)
+	pb.B = pb.B[:cap(pb.B)]
 	b := pb.B
 	var n int
 	for {
@@ -251,6 +255,7 @@ func ReadAll(r io.Reader) (pb *bpool.Bytes, err error) {
 		if len(b) == cap(b) {
 			// Add more capacity (let append pick how much).
 			newPb := bpool.Get(len(b) + len(b)/2)
+			newPb.B = newPb.B[:cap(newPb.B)]
 			copy(newPb.B, b)
 			b = newPb.B[:len(b)]
 			pb.RecycleToPool00()
