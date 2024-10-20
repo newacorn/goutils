@@ -2,13 +2,11 @@ module github.com/newacorn/goutils
 
 go 1.22.5
 
-toolchain go1.23.0
-
 require (
 	github.com/gookit/goutil v0.6.17
 	github.com/klauspost/compress v1.17.11
 	github.com/newacorn/brotli v0.0.0-20241020004304-ec39f4a41287
-	github.com/newacorn/cbrotli/go/cbrotli v0.0.0-20241020001412-f147f2b98efd
+	github.com/newacorn/cbrotli/go/cbrotli v0.0.0-20241020012012-8fb4aa8de81a
 	github.com/newacorn/simple-bytes-pool v0.0.0-20241019202108-1ca97a547e01
 	github.com/shirou/gopsutil/v4 v4.24.9
 	github.com/xyproto/randomstring v1.0.5
