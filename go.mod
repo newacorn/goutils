@@ -1,6 +1,8 @@
 module github.com/newacorn/goutils
 
-go 1.23.0
+go 1.22.5
+
+toolchain go1.23.0
 
 require (
 	github.com/gookit/goutil v0.6.17
