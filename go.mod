@@ -15,7 +15,6 @@ require (
 replace github.com/klauspost/compress v1.17.11 => github.com/newacorn/compress v0.0.0-20241020002001-be411bf4ca21
 
 require (
-	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/ebitengine/purego v0.8.0 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/gookit/color v1.5.4 // indirect
