@@ -239,7 +239,7 @@ func (discard) ReadFromWithEOF(r io.Reader) (n int64, err error) {
 // as an error to be reported.
 func ReadAll(r io.Reader) (pb *bpool.Bytes, err error) {
 	pb = bpool.Get(512)
-	pb.B = pb.B[:cap(pb.B)]
+	pb.B = pb.B[:0]
 	b := pb.B
 	var n int
 	for {
@@ -249,6 +249,7 @@ func ReadAll(r io.Reader) (pb *bpool.Bytes, err error) {
 			if err == io.EOF {
 				err = nil
 			}
+			pb.B = b
 			return
 		}
 
